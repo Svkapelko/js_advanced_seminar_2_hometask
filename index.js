@@ -15,175 +15,157 @@
 
 class Library {
 
-    #books = []; // Приватное свойство для хранения баланса
+    #books = []; // Приватное свойство, которое инициализируется пустым массивом и представляет собой список книг в библиотеке.
 
-    /*constructor(listOfBooks) { //Конструктор для инициализации начального баланса
-        if (listOfBooks < 0) {
+    constructor(initialBooks = []) { // Конструктор, который принимает начальный список книг (массив) в качестве аргумента. Убедитесь, что предоставленный массив не содержит дубликатов; в противном случае выбрасывайте ошибку
+        let uniqueBooks = new Set(initialBooks);
+        if (uniqueBooks.size !== initialBooks.length) {
             throw new Error("Представленный массив содержит дубликат");
         }
-        this.#books = listOfBooks;
-    }*/
+        this.#books = [...uniqueBooks];
+    }
 
     get allBooks() { // геттер возвращает текущий список книг
         return this.#books;
     };
-  
+
     addBook(title) { // Метод позволяет добавлять книгу в список. Если книга с таким названием уже существует в списке, выбросьте ошибку с соответствующим сообщением.
-        if (!title) {
-            throw new Error("Такая книга уже существует в списке книг");
+        if (this.#books.includes(title)) {
+            throw new Error(`Такая книга ${title} уже существует в списке книг`);
         }
-        this.#books += title;
-        return this.#books;
+        this.#books.push(title);
     }
 
     removeBook(title) { // Метод позволит удалять книгу из списка по названию. Если книги с таким названием нет в списке, выбросьте ошибку с соответствующим сообщением.
-        if (!title) {
-            throw new Error("Книги с таким названием нет в списке");
+        if (!this.#books.includes(title)) {
+            throw new Error(`Книги с таким названием ${title} нет в списке`);
         }
-        this.#books-= title;
-        return this.#books;
+        this.#books.splice(this.#books.indexOf(title), 1);
     }
 
     hasBook(title) { //метод проверяет наличие книги в библиотеке и возвращает true или false в зависимости от того, есть такая книга в списке или нет.
-        if (!title) {
-            throw new Error("Такая книга уже существует в списке книг");
-        }
-        return this.#books;
+        return this.#books.includes(title);
     }
-
-}
-
-let library = new Library; // Создаем новый банковский счет с начальным балансом 500
-console.log(library.books); //Выводит 500
-
-library.addBook();
-console.log(library.books); //Выводит 700
-
-library.removeBook();
-console.log(library.books); //Выводит 600
-
-library.hasBook();
-console.log(library.books)
-
-// Задание 2
-/*У вас есть базовый список пользователей. Некоторые из них имеют информацию о своем премиум-аккаунте, а некоторые – нет. Ваша задача – создать структуру классов для этих пользователей и функцию для получения информации о
-наличии премиум-аккаунта, используя Опциональную цепочку вызовов методов, оператор нулевого слияния и instanceof.
-1. Создайте базовый класс User с базовой информацией (например, имя и фамилия).
-2. Создайте классы PremiumUser и RegularUser, которые наследуются от User. Класс
-PremiumUser должен иметь свойство premiumAccount (допустим, дата истечения срока
-действия), а у RegularUser такого свойства нет.
-3. Создайте функцию getAccountInfo(user), которая принимает объект класса User и
-возвращает информацию о наличии и сроке действия премиум-аккаунта, используя
-Опциональную цепочку вызовов методов и оператор нулевого слияния.
-4. В функции getAccountInfo используйте instanceof для проверки типа переданного
-пользователя и дайте соответствующий ответ. */
-
-class User {
-    #name;
-    #surname;
-
-    constructor(name, surname) {
-        this.#name = name;
-        this.#surname = surname;
-    }
-
-    get name() {
-        return this.#name;
-    }
-
-    get surname() {
-        return this.#surname;
-    };
-}
-
-class RegularUser extends User {
-    constructor(name, surname) {
-        super(name, surname);
-    };
-}
-
-class PremiumUser extends User {
-    constructor(name, surname) {
-        super(name, surname);
-    };
-    premiumAccount = null;
-    setPremiumAccount() {
-        this.premiumAccount = new Date().setFullYear(new Date().getFullYear) + 1; // Пример: установите срок действия на год вперед
-    }
-}
-
-// Создать RegularUser 
-
-function getAccountInfo(user) {
-    // Премиум-аккаунт действителен до такой-то даты или информация отсутствует
-    // Пользователь без премиум-аккаунта
-    // Тип пользователя "неопределен"
-    if (user instanceof PremiumUser) {
-        /*console.log(
-            `${new Date(user.premiumAccount).toLocaleDateString()}`?? 'Информация отсутствует', 
-            user.name, 
-            user.surname
-        )*/
-        console.log(
-            user.premiumAccount ?? 'Информация отсутствует',
-            user.name,
-            user.surname
-        )
-    } else if (user instanceof RegularUser) {
-        console.log('Пользователь без премиум-аккаунта', user.name, user.surname);
-    } else {
-        console.log('Тип пользователя неопределен')
-    };
 }
 
 // Проверка
-const regular = new RegularUser('Иван', 'Смирнов');
-const premium = new PremiumUser('Алексей', 'Чернышенко');
-premium.setPremiumAccount();
-const premiumLim = new PremiumUser('Ольга', 'Петрова');
+let library = new Library(); // Создаем новую библиотеку
+console.log(library.allBooks); //Выводим список книг в библиотеке
 
-getAccountInfo(regular);
-getAccountInfo(premium);
-getAccountInfo(premiumLim);
+library.addBook("Варенье из одуванчиков");
+library.addBook("Сто лет одиночества");
+library.addBook("На западном фронте без перемен");
+library.addBook("О, дивный новый мир");
+console.log(library.allBooks); //Выводит список добавленных книг
 
-// - задание 2 не работает полнолстью - дата премиум аккуанта не читается
+// Добавляем существующую книгу
+try {
+    library.addBook("О, дивный новый мир");  //Выдает ошибку
+} catch (error) {
+    console.log(error);
+}
+
+// Проверяем наличие книги
+console.log(library.hasBook("Воскресенье")); // false
+console.log(library.hasBook("Сто лет одиночества")); // true
 
 
-// Задание 3
-/*Вы создаете интерфейс, где пользователь вводит число. Ваша задача — проверить, является ли введенное значение числом или нет, и дать соответствующий ответ.
-1. Создайте HTML-структуру: текстовое поле для ввода числа и кнопку
-"Проверить".
-2. Добавьте место (например, div) для вывода сообщения пользователю.
-3. Напишите функцию, которая будет вызвана при нажатии на кнопку. Эта функция
-должна использовать try и catch для проверки вводимого значения*/
+// Удаляем книгу по названию
+library.removeBook("Варенье из одуванчиков");
+console.log(library.allBooks); //Выводит список книг без книги, которую мы удалили
+
+// Удаляем несуществующую книгу
+try {
+    library.removeBook("Ревизор");  // Выдает ошибку, книги не существет
+} catch (error) {
+    console.log(error);
+}
 
 
-/*button.onclick = function checkIsNumber () {
-    block.textContent = input.value;
-}*/
+// Задание 2
+/*Вы разрабатываете систему отзывов для вашего веб-сайта. Пользователи могут оставлять отзывы, но чтобы исключить слишком короткие или слишком длинные сообщения, вы решаете установить некоторые ограничения.
 
-const comment = document.querySelector('.comment');
-const btn = document.querySelector('.btn');
-const num = document.querySelector('.num');
-btn.addEventListener('click', function (e) {
+Создайте HTML-структуру с текстовым полем для ввода отзыва, кнопкой для отправки и контейнером, где будут отображаться отзывы.
+
+Напишите функцию, которая будет добавлять отзыв в контейнер с отзывами. Однако если длина введенного отзыва менее 50 или более 500 символов, функция должна генерировать исключение.
+
+При добавлении отзыва, он должен отображаться на странице под предыдущими отзывами, а не заменять их.*/
+
+const reviewFormEl = document.getElementById('review-form');
+console.log(reviewFormEl);
+const errorBoxEl = document.querySelector('.error-box');
+console.log(errorBoxEl);
+const reviewBoxEl = document.querySelector('.review-box');
+console.log(reviewBoxEl);
+const buttonEl = document.querySelector('.btn');
+console.log(buttonEl);
+const inputElement = document.querySelector('input[type="text"]');
+console.log(inputElement);
+
+buttonEl.addEventListener('click', function (e) {
+
+
+
+    // проверка длины отзыва
     try {
-        const inputElement = num.value;
-        if (isNaN(inputElement)) {
-            throw new Error("Это не число");
+        if (inputElement.length < 50 || inputElement.length > 500) {
+            throw new Error("Длина отзыва должна составлять не менее 50 или не более 500 символов!");
         }
-        comment.textContent = "Молодец!";
-    } catch (error) {
-        comment.textContent = error.message;
+        errorBoxEl.textContent = "Молодец! Вы соблюдате правила написания отзыва";
+    }
+    catch (error) {
+        errorBoxEl.textContent = error.message;
     }
 });
 
-/*if (!input.value === Number) {
-    try {
-        throw new Error('Вы ввели не число');
-    }
-    catch(err) {
-        console.log(err);
-    }
+// добавляем новые отзывы
+function addReviews(review) {
+    reviews.forEach(element => {
+        const div = document.createElement('div');
+        div.classList.add('review-container');
+        div.innerHTML =
+        `
+            <p class="review-text>${review.text}</p>
+        `;
+        reviewBoxEl.appendChild(div);
+    });
 }
-}*/
+
+
+
+
+
+const initialData = [
+    {
+        product: "Apple iPhone 13",
+        reviews: [
+            {
+                id: "1",
+                text: "Отличный телефон! Батарея держится долго.",
+            },
+            {
+                id: "2",
+                text: "Камера супер, фото выглядят просто потрясающе.",
+            },
+        ],
+    },
+    {
+        product: "Samsung Galaxy Z Fold 3",
+        reviews: [
+            {
+                id: "3",
+                text: "Интересный дизайн, но дорогой.",
+            },
+        ],
+    },
+    {
+        product: "Sony PlayStation 5",
+        reviews: [
+            {
+                id: "4",
+                text: "Люблю играть на PS5, графика на высоте.",
+            },
+        ],
+    },
+];
 
